@@ -2,6 +2,7 @@ package dao
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -13,18 +14,24 @@ func TestCreateNotfMessageDAO(t *testing.T) {
 
 func TestStoreSuccess(t *testing.T) {
 	nm := New()
-	err := nm.Store("test")
+	timeNow := time.Now().UTC()
+	err := nm.Store("test", timeNow)
 
 	assert.Nil(t, err)
 	if len(nm.storage) != 1 {
 		assert.FailNow(t, "fail storing message")
 	}
-	assert.Equal(t, "test", nm.storage[0])
+	assert.Equal(t, Notification{Message: "test", Time: timeNow}, nm.storage[0])
 }
 
 func TestGetAllSuccess(t *testing.T) {
 	nm := New()
-	notif := []string{"test-1", "test-2", "test-3"}
+	notif := []Notification{
+		{Message: "test1",
+			Time: time.Now().UTC()},
+		{Message: "test2",
+			Time: time.Now().UTC().Add(time.Second)},
+	}
 	nm.storage = notif
 	actual, err := nm.GetAll()
 
