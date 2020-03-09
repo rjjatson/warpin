@@ -15,6 +15,13 @@ type Service struct {
 	inbound  chan []byte
 }
 
+// New create new notification DAO
+func New(dao *dao.NotifMessage) *Service {
+	return &Service{
+		notifDAO: dao,
+	}
+}
+
 // HandleStore is the handler of store notif API
 func (svc *Service) HandleStore(request *restful.Request, response *restful.Response) {
 	reqMessage := new(model.SendNotifRequest)
@@ -54,5 +61,5 @@ func (svc *Service) HandleGetAll(request *restful.Request, response *restful.Res
 	}
 
 	// todo log
-	response.WriteHeaderAndEntity(http.StatusOK, respMessages)
+	response.WriteHeaderAndEntity(http.StatusOK, model.GetAllNotifResponse{Notifications: respMessages})
 }

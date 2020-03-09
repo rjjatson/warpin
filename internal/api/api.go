@@ -13,6 +13,13 @@ type API struct {
 	svc *service.Service
 }
 
+// New creates mew API
+func New(svc *service.Service) *API {
+	return &API{
+		svc: svc,
+	}
+}
+
 // NewWebservice create new webservice
 func (api *API) NewWebservice() *restful.WebService {
 	ws := new(restful.WebService)
