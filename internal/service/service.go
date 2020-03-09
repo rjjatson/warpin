@@ -11,12 +11,12 @@ import (
 
 // Service is handler for the API
 type Service struct {
-	notifDAO *dao.NotifMessage
+	notifDAO dao.NotificationDAO
 	inbound  chan []byte
 }
 
 // New create new notification DAO
-func New(dao *dao.NotifMessage) *Service {
+func New(dao dao.NotificationDAO) *Service {
 	return &Service{
 		notifDAO: dao,
 	}

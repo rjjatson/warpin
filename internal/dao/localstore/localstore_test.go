@@ -1,8 +1,9 @@
-package dao
+package localstore
 
 import (
 	"testing"
 	"time"
+	"warpin/internal/model"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -21,12 +22,12 @@ func TestStoreSuccess(t *testing.T) {
 	if len(nm.storage) != 1 {
 		assert.FailNow(t, "fail storing message")
 	}
-	assert.Equal(t, Notification{Message: "test", Time: timeNow}, nm.storage[0])
+	assert.Equal(t, model.NotificationStore{Message: "test", Time: timeNow}, nm.storage[0])
 }
 
 func TestGetAllSuccess(t *testing.T) {
 	nm := New()
-	notif := []Notification{
+	notif := []model.NotificationStore{
 		{Message: "test1",
 			Time: time.Now().UTC()},
 		{Message: "test2",

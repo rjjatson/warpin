@@ -6,14 +6,14 @@ import (
 	"net/http"
 	"os"
 	"warpin/internal/api"
-	"warpin/internal/dao"
+	"warpin/internal/dao/localstore"
 	"warpin/internal/service"
 
 	"github.com/emicklei/go-restful"
 )
 
 func main() {
-	notifDAO := dao.New()
+	notifDAO := localstore.New()
 	svc := service.New(notifDAO)
 	api := api.New(svc)
 
