@@ -34,6 +34,13 @@
 
 
 ## Build
+- clone the root folder to your $GOPATH
+- run :
+`go build -o service`
+`./service`
 
+## Test
+- run : 
+`go test ./...`
 
-## Deployment
+## Manual Testing
