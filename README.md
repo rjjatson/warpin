@@ -38,11 +38,11 @@ Response body:
 ```
 cURL example
 ```
-curl --location --request GET 'ws://localhost:8787/notifications'
+curl --location --request GET 'localhost:8787/notifications'
 ```
     
 ### 3. Real time notification
-initiate ws connection to `{base url}/connect` then listen to the connection for notification update. you will get success message if connection established successfully. 
+initiate ws connection to `{base url}/connect` e.g.: ws://localhost:8787/connect then listen to the connection for notification update. you will get success message if connection established successfully. 
 
 I use [this](https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilpfeibdedpjgfnlcodoo) simple websocket client extension on chrome as websocket client.
 
