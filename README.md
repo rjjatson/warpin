@@ -1,18 +1,29 @@
 # Warpin Service
 ## Feature
-- Send notification 
+### 1. Send notification 
 
-    Send string message notification. 
-    POST `{base url}/notifications` <br>
-    Request body: 
-    ```
-    {"message":"string notification message"}
-    ```
+Send string message notification. 
+POST `{base url}/notifications` <br>
+Request body: 
+```
+{"message":"string notification message"}
+```
 
-- Get all notification
-    Collect all sent notification
-    GET `{base url}/notifications` <br>
-    Response body:
+cURL example
+```
+curl --location --request POST 'localhost:8787/notifications' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+	"message":"warpin warpin"
+}'
+```
+
+
+
+### 2. Get all notification
+Collect all sent notification
+GET `{base url}/notifications` <br>
+Response body:
 ``` 
 {
          notifications": [{
@@ -25,22 +36,28 @@
    		}]
 }
 ```
+cURL example
+```
+curl --location --request GET 'ws://localhost:8787/notifications'
+```
     
-- Real time notification
-    initiate ws connection to `{base url}/connect` then listen to the connection for notification update. 
+### 3. Real time notification
+initiate ws connection to `{base url}/connect` then listen to the connection for notification update. you will get success message if connection established successfully. 
 
-    I use [this](https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilpfeibdedpjgfnlcodoo) simple websocket client extension on chrome as websocket client.
+I use [this](https://chrome.google.com/webstore/detail/simple-websocket-client/pfdhoblngboilpfeibdedpjgfnlcodoo) simple websocket client extension on chrome as websocket client.
 
 
 
 ## Build
-- clone the root folder to your $GOPATH
-- run :
+clone the root folder to your $GOPATH
+
+
 `go build -o service`
+
 `./service`
 
 ## Test
-- run : 
+
 `go test ./...`
 
-## Manual Testing
+## Dockerized Build
