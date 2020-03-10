@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 	"warpin/internal/dao"
@@ -13,8 +14,9 @@ import (
 
 // Service is handler for the API
 type Service struct {
-	notifDAO dao.NotificationDAO
-	inbound  chan []byte
+	notifDAO  dao.NotificationDAO
+	wsClients []*websocket.Conn
+	broadcast chan []byte
 }
 
 var upgrader = websocket.Upgrader{
@@ -25,9 +27,12 @@ var upgrader = websocket.Upgrader{
 
 // New create new notification DAO
 func New(dao dao.NotificationDAO) *Service {
-	return &Service{
-		notifDAO: dao,
+	svc := &Service{
+		notifDAO:  dao,
+		broadcast: make(chan []byte, 0),
 	}
+	go svc.runBroadcast()
+	return svc
 }
 
 // HandleStore is the handler of store notif API
@@ -39,13 +44,21 @@ func (svc *Service) HandleStore(request *restful.Request, response *restful.Resp
 		response.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
-	err = svc.notifDAO.Store(reqMessage.Message, time.Now().UTC())
+	timestamp := time.Now().UTC()
+	err = svc.notifDAO.Store(reqMessage.Message, timestamp)
 	if err != nil {
 		// todo log
 		response.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	go func() {
+		b, _ := json.Marshal(model.Notification{
+			Message: reqMessage.Message,
+			Time:    timestamp.Format(time.RFC3339),
+		})
+		svc.broadcast <- b
+	}()
 
 	// todo log
 	response.WriteHeader(http.StatusOK)
@@ -81,7 +94,18 @@ func (svc *Service) Connect(request *restful.Request, response *restful.Response
 		return
 	}
 
-	conn.WriteMessage(websocket.TextMessage, []byte("ok"))
+	conn.WriteMessage(websocket.TextMessage, []byte(`{"type":"connect_notif","message":"ok"}`))
 
-	// todo build the client
+	svc.wsClients = append(svc.wsClients, conn)
+}
+
+func (svc *Service) runBroadcast() {
+	for {
+		select {
+		case msg := <-svc.broadcast:
+			for _, con := range svc.wsClients {
+				con.WriteMessage(websocket.TextMessage, msg)
+			}
+		}
+	}
 }
