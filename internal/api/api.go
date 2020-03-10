@@ -20,8 +20,8 @@ func New(svc *service.Service) *API {
 	}
 }
 
-// NewWebservice create new webservice
-func (api *API) NewWebservice() *restful.WebService {
+// NewHTTPAPI create new webservice
+func (api *API) NewHTTPAPI() *restful.WebService {
 	ws := new(restful.WebService)
 	ws.Path("/notifications").Consumes(restful.MIME_JSON).Produces(restful.MIME_JSON)
 
@@ -34,6 +34,17 @@ func (api *API) NewWebservice() *restful.WebService {
 		To(api.svc.HandleGetAll).
 		Writes(model.GetAllNotifResponse{}).
 		Returns(http.StatusOK, "", nil))
+
+	return ws
+}
+
+// NewWebsocketAPI create new webservice
+func (api *API) NewWebsocketAPI() *restful.WebService {
+	ws := new(restful.WebService)
+	ws.Path("/connect")
+
+	ws.Route(ws.GET("").
+		To(api.svc.Connect))
 
 	return ws
 }

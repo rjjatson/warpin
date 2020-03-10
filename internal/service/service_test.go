@@ -2,6 +2,6 @@ package service
 
 import "testing"
 
-func TestHandleGetAllSuccess(t *testing.T){
-	
+func TestHandleGetAllSuccess(t *testing.T) {
+
 }

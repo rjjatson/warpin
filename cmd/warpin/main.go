@@ -17,7 +17,8 @@ func main() {
 	svc := service.New(notifDAO)
 	api := api.New(svc)
 
-	restful.DefaultContainer.Add(api.NewWebservice())
+	restful.DefaultContainer.Add(api.NewHTTPAPI())
+	restful.DefaultContainer.Add(api.NewWebsocketAPI())
 
 	portNum := os.Getenv("SERVICE_PORT")
 	if portNum == "" {
